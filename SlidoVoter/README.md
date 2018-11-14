@@ -16,5 +16,5 @@ If you mention this utility anywhere, feel free to let me know in this repositor
 
 ## Utility mentions
 
-- [medium.com]()
+- [medium.com](https://medium.com/@dusekdan/sli-do-and-the-rigged-company-vote-329fba310901)
 - [danieldusek.com](https://danieldusek.com/blog/4/sli-do-and-the-rigged-company-vote)
