@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Log all PostMessages to * origin</title>
+        <meta charset="utf-8">
+    </head>
+    <body onload="subscribeToMessages()">
+    <script type="text/javascript">
+
+        function subscribeToMessages() {
+            window.addEventListener("message", (event) => {
+                logIncomingMessage(event.origin, event.data);
+            });
+        }
+
+        function logIncomingMessage(origin, data){
+            let logPane = document.getElementById("logpane");
+            let time = new Date(new Date().getTime() + 2*60*60*1000).toISOString();
+
+            let messageString = "[" + time + "] Message from: " + escape(origin);
+            messageString += " DATA: " + escape(data) + "<br>";
+            logPane.innerHTML += messageString + messageString.innerHTML;
+        }
+    </script>
+        <div id="logpane" style="width: 98vw;height: 100vh;overflow: scroll;">
+            Waiting for messages...<br>
+        </div>
+    </body>
+</html>
