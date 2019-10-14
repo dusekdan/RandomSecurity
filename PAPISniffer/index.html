@@ -8,7 +8,9 @@
     <script type="text/javascript">
 
         function subscribeToMessages() {
+            console.log("Subsription function called.")
             window.addEventListener("message", (event) => {
+                console.log("Message received...")
                 logIncomingMessage(event.origin, event.data);
             });
         }
