@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PostMessage Receiver</title>
+</head>
+<body onload="init()">
+<script type="text/javascript">
+let subButton;
+let subUrl;
+let iframes = [];
+let receivedMessages = [];
+const init = () => {
+    subButton = document.getElementById("subscribe-message");
+    subUrl = document.getElementById("url");
+    subButton.addEventListener('click', subscribeMessages);
+    subUrl.addEventListener('keydown', (e) => { if (e.keyCode === 13) subscribeMessages(); });
+    window.addEventListener('message', logMessage);
+}
+
+const subscribeMessages = (evnt) => {
+    // Subscribe to receive .postMessage() messages. They can come either from
+    // the window opened from this script (window.open) or from iframe opened
+    // from within this file. 
+    let url = document.getElementById("url").value;
+    
+    // Parent: window.open(child) -> child calls window.opener.postMessage()
+    window.open(url);
+
+    // Parent: iframe.src=child -> child calls window.parent|top.postMessage()
+    let iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframes.push(iframe);
+    refreshIframes();
+
+}
+
+const refreshIframes = () => {
+    let frames = document.getElementById("frames");
+    frames.innerHTML = "";
+    iframes.forEach((value) => {
+        frames.appendChild(value);
+    });
+}
+
+const logMessage = (evnt) => {
+    if (!receivedMessages.includes(evnt)) {
+                receivedMessages.push(evnt);
+                let logPane = document.getElementById("logpane");
+                let utcp2Offset = 2*60*60*1000; // UTC+2 timezone offset
+                let time = new Date(new Date().getTime() + utcp2Offset).toISOString();
+
+                let messageString = "[" + time + "] Message from: " + escape(evnt.origin);
+                messageString += " DATA: " + JSON.stringify(evnt.data) + "<br>";
+                let prev = logPane.innerHTML;
+                logPane.innerHTML = messageString + prev;
+            } else { console.log("Message already processed."); }
+}
+</script>
+
+    <!--
+        Input URL to check for leaking postMessages.
+    -->
+    <input type="text" id="url" name="url" style="width: 90vw;"><button id="subscribe-message">Subscribe</button>
+    <div id="logpane" style="width: 98vw;height: 100vh;overflow: scroll;">
+    Waiting for messages...<br>
+    </div>
+
+    <!-- 
+        Target gets also iframed into the page to allow receiving 
+        messages from (window.parent|window.top).postMessage(data,*)
+    -->
+    <div id="frames"></div>
+</body>
+</html>
