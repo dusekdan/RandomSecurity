@@ -2,7 +2,7 @@
 
 Open `index.htm` in browser and subscribe to URL which you want to check for leaking postAPI message.
 
-It will log leaking messages from child iframe (passed to parent either through `window.parent` or through `window.top1`) and from child windows (passed to parent through `window.opener`).
+It will log leaking messages from child iframe (passed to parent either through `window.parent` or through `window.top`) and from child windows (passed to parent through `window.opener`).
 
 ## Demo
 
